@@ -1,6 +1,9 @@
 #include "Timer.h" // https://github.com/AlexZibin/timer
 
 enum class LoopDir {FORWARD, BACK, FORWARD_AND_BACK, BACK_AND_FORWARD};
+//enum class returnValue {CONTINUE, FORWARD, BACK};
+//typedef returnValue (*fPtr)(long); 
+
 typedef int (*fPtr)(long); 
 
 class ModeChanger {
