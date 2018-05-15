@@ -42,7 +42,7 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
               break;
         }
     } 
-    if (callCurrModeFunc (_currentCallNumber++)) { // Если функция возвращает не-ноль, значит - переключиться на следующую функцию	
+    if (callCurrModeFunc (_currentCallNumber++)) { // routine asks to change 	
 		timer.prepareToTrigger ();
 	}
     return false;
