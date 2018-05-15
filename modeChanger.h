@@ -1,7 +1,7 @@
 #include "Timer.h" // https://github.com/AlexZibin/timer
 
 enum class LoopDir {FORWARD, BACK, FORWARD_AND_BACK, BACK_AND_FORWARD};
-enum class returnValue {CONTINUE, NEXT, TERMINATE};
+enum class returnValue {CONTINUE, NEXT, TERMINATE, ERROR};
 typedef returnValue (*fPtr)(long); 
 //typedef int (*fPtr)(long); 
 
@@ -20,7 +20,7 @@ class ModeChanger {
     int prevMode (void);
     int applyMode (int newMode);
     int applyMode (fPtr newModeFunc);
-    int callCurrModeFunc (long param);
+    returnValue callCurrModeFunc (long param);
     bool modeJustChanged (void);
 
     // moves to next function only when current function returns returnValue::FORWARD
