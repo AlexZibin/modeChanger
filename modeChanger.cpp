@@ -9,7 +9,7 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
         _numCycles = numCycles;
         timer.setInterval ("ms", nSec*1000);
         timer.switchOn ();
-        applyMode (0);
+        applyMode (0);      /* */
         
         switch (direction) {
           case LoopDir::BACK:
@@ -42,9 +42,14 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
               break;
         }
     } 
-    if (callCurrModeFunc (_currentCallNumber++)) { // routine asks to change 	
-		timer.prepareToTrigger ();
-	}
+    switch (callCurrModeFunc (_currentCallNumber++)) { 
+        case E::NEXT:       // routine asks to forward-change mode
+            timer.prepareToTrigger ();
+            break;
+        case E::A:       // routine asks to forward-change mode
+            timer.switchOff ();
+            return true; 
+    }
     return false;
 }
 
