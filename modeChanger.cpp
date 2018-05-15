@@ -43,17 +43,17 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
         }
     } 
     switch (callCurrModeFunc (_currentCallNumber++)) { 
-        case E::NEXT:       // routine asks to forward-change mode
+        case returnValue::NEXT:            // routine asks to forward-change mode
             timer.prepareToTrigger ();
             break;
-        case E::A:       // routine asks to forward-change mode
+        case returnValue::TERMINATE:       // routine asks to forward-change mode
             timer.switchOff ();
             return true; 
     }
     return false;
 }
 
-// moves to next function only when current function returns zero:
+// stub, not implemented yet:
 bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return false;}
 //bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
 
