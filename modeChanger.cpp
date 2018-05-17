@@ -8,7 +8,7 @@
         _numCycles = numCycles;
         timer.setInterval ("ms", nSec*1000);
         timer.switchOn ();
-        applyMode (0);      /* */
+        applyMode (0);      
         
         switch (direction) {
           case LoopDir::BACK:
@@ -63,10 +63,30 @@ bool ModeChanger::loopThruModeFunc (void) {
         case returnValue::NEXT:            // routine asks to forward-change mode
             nextMode ();
             break;
-        case returnValue::TERMINATE:       // routine asks to terminate the loop of functions
-            currentCallNumber = 0;
+        case returnValue::SHORTPRESS:
+        case returnValue::TERMINATE:
+            changeCtlArray (nextPress);
             return true; 
+            break;
+        case returnValue::LONGPRESS:
+            changeCtlArray (nextLongPress);
+            return true; 
+            break;
     }
+    
+    if (rotaryTurnLeft ()) {
+        prevMode ();
+    }    
+    if (rotaryTurnRight ()) {
+        nextMode ();
+    }    
+    if (button.shortPress()) {
+        changeCtlArray (nextPress);
+    }
+    if (button.longPress ()) {
+        changeCtlArray (nextLongPress);
+    }
+
     return false;
 }
 
