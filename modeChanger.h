@@ -9,7 +9,7 @@ typedef returnValue (*fPtr)(long);
 struct ControlStruct {
     fPtr *funcArray;
     int funcArrayLen;
-    void (*endingFunction) (void);
+    void (*endingFunction) (long);
     LoopMode loopMode;
     ControlStruct *nextPress;
     ControlStruct *nextLongPress;
