@@ -53,6 +53,22 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
     return false;
 }
 
+// moves to next function only when current function returns returnValue::NEXT
+// returns true to signal to terminate the loop
+bool ModeChanger::loopThruModeFunc (void) {
+    // Current function in _funcArray is called until it returns a flag
+
+    switch (callCurrModeFunc (_currentCallNumber++)) { 
+        case returnValue::NEXT:            // routine asks to forward-change mode
+            nextMode ();
+            break;
+        case returnValue::TERMINATE:       // routine asks to terminate the loop of functions
+            _currentCallNumber = 0;
+            return true; 
+    }
+    return false;
+}
+
 // stub, not implemented yet:
 bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return false;}
 //bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
