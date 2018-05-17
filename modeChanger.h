@@ -29,7 +29,7 @@ class ModeChanger {
     // returns true if all functions are executed of if current function returns returnValue::TERMINATE
     bool loopThruModeFunc (int nSec, int numCycles=1, LoopDir direction = LoopDir::FORWARD);
 
-    // moves to next function only when current function returns returnValue::FORWARD
+    // moves to next function only when current function returns returnValue::NEXT
     bool loopThruModeFunc ();
     
     //bool loopThruModeFunc (int nSec=10, int numCycles=1, LoopDir direction = LoopDir::FORWARD, int startMode = 0);
