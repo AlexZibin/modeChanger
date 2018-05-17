@@ -137,7 +137,7 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
 returnValue ModeChanger::callCurrModeFunc (long param) {
     if (currMode > -1) { // Negative stands for some error
         returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
-        if (endingFunction) { (*endingFunction) (param); }
+        if (controlStructPtr->endingFunction) { (*(controlStructPtr->endingFunction)) (param); }
         return retVal;
     }
     return returnValue::ERROR; // error
