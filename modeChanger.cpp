@@ -74,6 +74,8 @@ bool ModeChanger::loopThruModeFunc (void) {
             break;
     }
     
+    if (!endingFunction) (*endingFunction) ();
+    
     if (rotaryTurnLeft ()) {
         prevMode ();
     }    
