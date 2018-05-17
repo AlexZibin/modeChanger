@@ -7,10 +7,11 @@ typedef returnValue (*fPtr)(long);
 
 class ModeChanger {
     fPtr *_funcArray;
+    fPtr _endingFunction;
     int _numModes;
     int _currMode = 0; // -1 is an indication of an error (index out of range; -1 = array not initialized; -2 = function not found; etc);
     int _prevMode = -100;
-	long _currentCallNumber = 0;
+    long _currentCallNumber = 0;
     Timer timer;
   public:
     ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _numModes(numModes) {}
