@@ -17,16 +17,16 @@ struct ControlStruct {
 
 class ModeChanger {
     ControlStruct *controlStructPtr;
-    int _currMode = 0; // -1 is an indication of an error (index out of range; -1 = array not initialized; -2 = function not found; etc);
-    int _prevMode = -100;
-    long _currentCallNumber = 0;
+    int currMode = 0; // -1 is an indication of an error (index out of range; -1 = array not initialized; -2 = function not found; etc);
+    int prevMode = -100;
+    long currentCallNumber = 0;
     Timer timer;
   public:
     ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
     void changeCtlArray (ControlStruct *_controlStructPtr) { controlStructPtr = _controlStructPtr; 
-                                                             _currMode = 0;
-                                                             _prevMode = -100;
-                                                             _currentCallNumber = 0;
+                                                             currMode = 0;
+                                                             prevMode = -100;
+                                                             currentCallNumber = 0;
                                                              timer.switchOff ();
                                                            }
     //void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
