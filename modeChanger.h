@@ -14,8 +14,8 @@ class ModeChanger {
     long _currentCallNumber = 0;
     Timer timer;
   public:
-    ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _numModes(numModes) {}
-    void testOp ();
+    ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _endingFunction (nullptr); _numModes(numModes) {}
+    void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
     int getCurrModeNumber (void) { return _currMode; };
     int nextMode (void);
     int prevMode (void);
