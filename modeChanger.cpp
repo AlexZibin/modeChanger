@@ -88,7 +88,7 @@ int ModeChanger::nextMode (void) {
             currMode = 0;
         }
     }    
-	currentCallNumber = 0;
+    currentCallNumber = 0;
     /*Serial.print ("\nSwitched to mode ");
     Serial.println (_currMode);
 */
