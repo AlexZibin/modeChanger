@@ -26,9 +26,11 @@ class ModeChanger {
     returnValue callCurrModeFunc (long param);
     bool modeJustChanged (void);
 
-    // moves to next function only when current function returns returnValue::FORWARD
     // returns true if all functions are executed of if current function returns returnValue::TERMINATE
-    bool loopThruModeFunc (int nSec=10, int numCycles=1, LoopDir direction = LoopDir::FORWARD);
+    bool loopThruModeFunc (int nSec, int numCycles=1, LoopDir direction = LoopDir::FORWARD);
+
+    // moves to next function only when current function returns returnValue::FORWARD
+    bool loopThruModeFunc ();
     
     //bool loopThruModeFunc (int nSec=10, int numCycles=1, LoopDir direction = LoopDir::FORWARD, int startMode = 0);
     //bool loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero=false) {
