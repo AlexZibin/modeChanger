@@ -119,7 +119,7 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
 
 returnValue ModeChanger::callCurrModeFunc (long param) {
     if (_currMode > -1) { // Negative stands for some error
-        bool retVal = (*_funcArray[_currMode]) (param);
+        returnValue retVal = (*_funcArray[_currMode]) (param);
         (*_endingFunction) (param);
         return retVal;
     }
