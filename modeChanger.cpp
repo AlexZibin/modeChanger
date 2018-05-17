@@ -1,6 +1,6 @@
 #include "modeChanger.h"
 
-bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) {
+/*bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) {
     // Each function in _funcArray is called for nSec seconds or until it returns a flag
     static int _numCycles;
       
@@ -51,14 +51,15 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
             return true; 
     }
     return false;
-}
+}*/
 
+//////////////////////////////////////////////////////////////////////////////
 // moves to next function only when current function returns returnValue::NEXT
 // returns true to signal to terminate the loop
 bool ModeChanger::loopThruModeFunc (void) {
-    // Current function in _funcArray is called until it returns a flag
+    // Current function in controlStructPtr->funcArray is called until it returns a flag
 
-    switch (callCurrModeFunc (_currentCallNumber++)) { 
+    switch (callCurrModeFunc (currentCallNumber++)) { 
         case returnValue::NEXT:            // routine asks to forward-change mode
             nextMode ();
             break;
