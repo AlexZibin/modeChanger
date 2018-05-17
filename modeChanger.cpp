@@ -17,7 +17,7 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
         };
     } else if (timer.needToTrigger ()) {
         _currentCallNumber = 0;
-		switch (direction) {
+        switch (direction) {
           case LoopDir::FORWARD:
           case LoopDir::FORWARD_AND_BACK: // FORWARD_AND_BACK now is a stub; will be developed later
                 Serial.println ("Switching forward");
@@ -46,6 +46,7 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
             timer.prepareToTrigger ();
             break;
         case returnValue::TERMINATE:       // routine asks to forward-change mode
+            _currentCallNumber = 0;
             timer.switchOff ();
             return true; 
     }
