@@ -2,12 +2,21 @@
 
 enum class LoopDir {FORWARD, BACK, FORWARD_AND_BACK, BACK_AND_FORWARD};
 enum class returnValue {CONTINUE, NEXT, TERMINATE, ERROR};
+enum class LoopMode {ONCE, INFINITE};
+
 typedef returnValue (*fPtr)(long); 
 
-class ModeChanger {
-    fPtr *_funcArray;
+struct ControlStruct {
+    fPtr *funcArray;
+    int funcArrayLen;
     fPtr _endingFunction;
-    int _numModes;
+    LoopMode loopMode;
+    ControlStruct *nextPress;
+    ControlStruct *nextLongPress;
+};
+
+class ModeChanger {
+    ControlStruct *controlStructPtr;
     int _currMode = 0; // -1 is an indication of an error (index out of range; -1 = array not initialized; -2 = function not found; etc);
     int _prevMode = -100;
     long _currentCallNumber = 0;
@@ -15,6 +24,7 @@ class ModeChanger {
   public:
     //ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _numModes(numModes), _endingFunction (nullptr) {}
     //ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
+    //ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) {changeCtlArray (funcArray, numModes, endingFunction); }
     ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) {changeCtlArray (funcArray, numModes, endingFunction); }
     void changeCtlArray (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
     void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
@@ -37,4 +47,3 @@ class ModeChanger {
     
     bool loopThruModeFunc (LoopDir direction = LoopDir::FORWARD, long numCycles=1); 
 };
-
