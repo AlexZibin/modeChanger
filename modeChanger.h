@@ -3,7 +3,6 @@
 enum class LoopDir {FORWARD, BACK, FORWARD_AND_BACK, BACK_AND_FORWARD};
 enum class returnValue {CONTINUE, NEXT, TERMINATE, ERROR};
 typedef returnValue (*fPtr)(long); 
-//typedef int (*fPtr)(long); 
 
 class ModeChanger {
     fPtr *_funcArray;
@@ -14,10 +13,12 @@ class ModeChanger {
     long _currentCallNumber = 0;
     Timer timer;
   public:
-    ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _numModes(numModes), _endingFunction (nullptr) {}
-    ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
+    //ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _numModes(numModes), _endingFunction (nullptr) {}
+    //ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
+    ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) {changeCtlArray (funcArray, numModes, endingFunction); }
+    void changeCtlArray (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
     void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
-    int getCurrModeNumber (void) { return _currMode; };
+    int getCurrModeNumber (void) { return _currMode; }
     int nextMode (void);
     int prevMode (void);
     int applyMode (int newMode);
