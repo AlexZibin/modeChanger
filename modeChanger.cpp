@@ -1,8 +1,7 @@
 #include "modeChanger.h"
 
 bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) {
-//bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
-    // Each function in _funcArray is called for nSec seconds
+    // Each function in _funcArray is called for nSec seconds or until it returns a flag
     static int _numCycles;
       
     if (!timer.isOn ()) {
@@ -57,12 +56,6 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
 bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return false;}
 //bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
 
-void ModeChanger::testOp () {
-  (*_funcArray[0])(1);
-  (*_funcArray[1])(1); 
-  (*_funcArray[2])(1); 
-}
-
 bool ModeChanger::modeJustChanged (void) {
     if (_prevMode != _currMode) {
         _prevMode = _currMode;
@@ -78,9 +71,9 @@ int ModeChanger::nextMode (void) {
         }
     }    
 	_currentCallNumber = 0;
-    Serial.print ("\nTrying to switch to mode ");
+    /*Serial.print ("\nSwitched to mode ");
     Serial.println (_currMode);
-
+*/
     return _currMode; 
 }
 
@@ -126,7 +119,9 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
 
 returnValue ModeChanger::callCurrModeFunc (long param) {
     if (_currMode > -1) { // Negative stands for some error
-        return (*_funcArray[_currMode]) (param);
+        bool retVal = (*_funcArray[_currMode]) (param);
+        (*_endingFunction) (param);
+        return retVal;
     }
     return returnValue::ERROR; // error
 }
