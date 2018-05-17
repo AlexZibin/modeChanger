@@ -65,16 +65,17 @@ bool ModeChanger::loopThruModeFunc (void) {
             break;
         case returnValue::SHORTPRESS:
         case returnValue::TERMINATE:
-            changeCtlArray (nextPress);
+            changeCtlArray (controlStructPtr->nextPress);
             return true; 
             break;
         case returnValue::LONGPRESS:
-            changeCtlArray (nextLongPress);
-            return true; 
+            changeCtlArray (controlStructPtr->nextLongPress);
+            return true;
             break;
     }
-    
-    if (!endingFunction) (*endingFunction) ();
+
+
+    if (controlStructPtr->endingFunction != nullptr) (*(controlStructPtr->endingFunction)) (0);
     
     if (rotaryTurnLeft ()) {
         prevMode ();
@@ -83,81 +84,81 @@ bool ModeChanger::loopThruModeFunc (void) {
         nextMode ();
     }    
     if (button.shortPress()) {
-        changeCtlArray (nextPress);
+        changeCtlArray (controlStructPtr->nextPress);
     }
     if (button.longPress ()) {
-        changeCtlArray (nextLongPress);
+        changeCtlArray (controlStructPtr->nextLongPress);
     }
 
     return false;
 }
 
 // stub, not implemented yet:
-bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return false;}
+//bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return false;}
 //bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
 
 bool ModeChanger::modeJustChanged (void) {
-    if (prevMode != currMode) {
-        prevMode = currMode;
+    if (_prevMode != _currMode) {
+        _prevMode = _currMode;
         return true;
     }
     return false;
 }
 
 int ModeChanger::nextMode (void) {
-    if (currMode > -1) { // Negative stands for some error
-        if (++currMode == controlStructPtr->funcArrayLen) { // Close the circle
-            currMode = 0;
+    if (_currMode > -1) { // Negative stands for some error
+        if (++_currMode == controlStructPtr->funcArrayLen) { // Close the circle
+            _currMode = 0;
         }
     }    
     currentCallNumber = 0;
     /*Serial.print ("\nSwitched to mode ");
     Serial.println (_currMode);
 */
-    return currMode; 
+    return _currMode; 
 }
 
 int ModeChanger::prevMode (void) {
-    if (currMode > -1) { // Negative stands for some error
-        if (--currMode == -1) { // Close the circle backwards
-            currMode = controlStructPtr->funcArrayLen - 1;
+    if (_currMode > -1) { // Negative stands for some error
+        if (--_currMode == -1) { // Close the circle backwards
+            _currMode = controlStructPtr->funcArrayLen - 1;
         }
     }    
     currentCallNumber = 0;
-    return currMode; 
+    return _currMode; 
 }
 
 int ModeChanger::applyMode (int newMode) {
   
     if ((newMode >=0) && (newMode < controlStructPtr->funcArrayLen)) {
-        currMode = newMode;
+        _currMode = newMode;
     } else {
-        currMode = -10; // out of range error;
+        _currMode = -10; // out of range error;
     }
     currentCallNumber = 0;
-    return currMode; 
+    return _currMode; 
 }
 
 int ModeChanger::applyMode (fPtr newModeFunc) {
-    currMode = -2; // negative value is an indication of an error
+    _currMode = -2; // negative value is an indication of an error
 
     for (int i = 0; i < controlStructPtr->funcArrayLen; i++) {
        // compare two pointers
        //Serial.print("_funcArray[i]: ");
        if (newModeFunc == controlStructPtr->funcArray[i]) {
-            currMode = i;
+            _currMode = i;
         }
     }
 	currentCallNumber = 0;
-    if (currMode < 0) { // newModeFunc not found in the list of our registered functions! This is not allowed!
+    if (_currMode < 0) { // newModeFunc not found in the list of our registered functions! This is not allowed!
         Serial.println ("\n\nERROR! MODE NOT FOUND!\n\n");
         delay (1000);
     }
-    return currMode; 
+    return _currMode; 
 }
 
 returnValue ModeChanger::callCurrModeFunc (long param) {
-    if (currMode > -1) { // Negative stands for some error
+    if (_currMode > -1) { // Negative stands for some error
         returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
         if (controlStructPtr->endingFunction) { (*(controlStructPtr->endingFunction)) (param); }
         return retVal;

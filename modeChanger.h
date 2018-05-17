@@ -1,4 +1,9 @@
 #include "Timer.h" // https://github.com/AlexZibin/timer
+#include "DualFunctionButton.h"
+
+extern bool rotaryTurnLeft (); 
+extern bool rotaryTurnRight (); 
+extern DualFunctionButton button;
 
 enum class LoopDir {FORWARD, BACK, FORWARD_AND_BACK, BACK_AND_FORWARD};
 enum class returnValue {CONTINUE, NEXT, TERMINATE, ERROR, SHORTPRESS, LONGPRESS};
@@ -17,19 +22,19 @@ struct ControlStruct {
 
 class ModeChanger {
     ControlStruct *controlStructPtr;
-    int currMode = 0; // -1 is an indication of an error (index out of range; -1 = array not initialized; -2 = function not found; etc);
-    int prevMode = -100;
+    int _currMode = 0; // -1 is an indication of an error (index out of range; -1 = array not initialized; -2 = function not found; etc);
+    int _prevMode = -100;
     long currentCallNumber = 0;
     Timer timer;
   public:
     ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
-    void changeCtlArray (ControlStruct *_controlStructPtr) { controlStructPtr = _controlStructPtr; 
-                                                             currMode = 0;
-                                                             prevMode = -100;
+    void changeCtlArray (ControlStruct *_controlStructPtr) { 
+															 controlStructPtr = _controlStructPtr; 
+                                                             _currMode = 0;
+                                                             _prevMode = -100;
                                                              currentCallNumber = 0;
                                                              timer.switchOff ();
                                                            }
-    //void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
     int getCurrModeNumber (void) { return _currMode; }
     int nextMode (void);
     int prevMode (void);
@@ -47,5 +52,5 @@ class ModeChanger {
     //bool loopThruModeFunc (int nSec=10, int numCycles=1, LoopDir direction = LoopDir::FORWARD, int startMode = 0);
     //bool loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero=false) {
     
-    bool loopThruModeFunc (LoopDir direction = LoopDir::FORWARD, long numCycles=1); 
+    //bool loopThruModeFunc (LoopDir direction, long numCycles=1); 
 };
