@@ -22,12 +22,14 @@ class ModeChanger {
     long _currentCallNumber = 0;
     Timer timer;
   public:
-    //ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _numModes(numModes), _endingFunction (nullptr) {}
-    //ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
-    //ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) {changeCtlArray (funcArray, numModes, endingFunction); }
-    ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) {changeCtlArray (funcArray, numModes, endingFunction); }
-    void changeCtlArray (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
-    void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
+    ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
+    void changeCtlArray (ControlStruct *_controlStructPtr) { controlStructPtr = _controlStructPtr; 
+                                                             _currMode = 0;
+                                                             _prevMode = -100;
+                                                             _currentCallNumber = 0;
+                                                             timer.switchOff ();
+                                                           }
+    //void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
     int getCurrModeNumber (void) { return _currMode; }
     int nextMode (void);
     int prevMode (void);
