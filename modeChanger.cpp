@@ -46,7 +46,7 @@ bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) 
             timer.prepareToTrigger ();
             break;
         case returnValue::TERMINATE:       // routine asks to terminate the loop of functions
-            _currentCallNumber = 0;
+            currentCallNumber = 0;
             timer.switchOff ();
             return true; 
     }
@@ -63,7 +63,7 @@ bool ModeChanger::loopThruModeFunc (void) {
             nextMode ();
             break;
         case returnValue::TERMINATE:       // routine asks to terminate the loop of functions
-            _currentCallNumber = 0;
+            currentCallNumber = 0;
             return true; 
     }
     return false;
@@ -74,70 +74,69 @@ bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return f
 //bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
 
 bool ModeChanger::modeJustChanged (void) {
-    if (_prevMode != _currMode) {
-        _prevMode = _currMode;
+    if (prevMode != currMode) {
+        prevMode = currMode;
         return true;
     }
     return false;
 }
 
 int ModeChanger::nextMode (void) {
-    if (_currMode > -1) { // Negative stands for some error
-        if (++_currMode == _numModes) { // Close the circle
-            _currMode = 0;
+    if (currMode > -1) { // Negative stands for some error
+        if (++currMode == controlStructPtr->funcArrayLen) { // Close the circle
+            currMode = 0;
         }
     }    
-	_currentCallNumber = 0;
+	currentCallNumber = 0;
     /*Serial.print ("\nSwitched to mode ");
     Serial.println (_currMode);
 */
-    return _currMode; 
+    return currMode; 
 }
 
 int ModeChanger::prevMode (void) {
-    if (_currMode > -1) { // Negative stands for some error
-        if (--_currMode == -1) { // Close the circle backwards
-            _currMode = _numModes-1;
+    if (currMode > -1) { // Negative stands for some error
+        if (--currMode == -1) { // Close the circle backwards
+            currMode = controlStructPtr->funcArrayLen - 1;
         }
     }    
-    _currentCallNumber = 0;
-	return _currMode; 
+    currentCallNumber = 0;
+    return currMode; 
 }
 
 int ModeChanger::applyMode (int newMode) {
   
-    if ((newMode >=0) && (newMode < _numModes)) {
-        _currMode = newMode;
+    if ((newMode >=0) && (newMode < controlStructPtr->funcArrayLen)) {
+        currMode = newMode;
     } else {
-        _currMode = -10; // out of range error;
+        currMode = -10; // out of range error;
     }
-    _currentCallNumber = 0;
-    return _currMode; 
+    currentCallNumber = 0;
+    return currMode; 
 }
 
 int ModeChanger::applyMode (fPtr newModeFunc) {
-    _currMode = -2; // negative value is an indication of an error
+    currMode = -2; // negative value is an indication of an error
 
-    for (int i = 0; i < _numModes; i++) {
+    for (int i = 0; i < controlStructPtr->funcArrayLen; i++) {
        // compare two pointers
        //Serial.print("_funcArray[i]: ");
-       //Serial.println((unsigned long)_funcArray[i]);
-       if (newModeFunc == _funcArray[i]) {
-            _currMode = i;
+       if (newModeFunc == controlStructPtr->funcArray[i]) {
+            currMode = i;
         }
     }
-	_currentCallNumber = 0;
-    if (_currMode < 0) { // newModeFunc not found in the list of our registered functions! This is not allowed!
+	currentCallNumber = 0;
+    if (currMode < 0) { // newModeFunc not found in the list of our registered functions! This is not allowed!
         Serial.println ("\n\nERROR! MODE NOT FOUND!\n\n");
         delay (1000);
     }
-    return _currMode; 
+    return currMode; 
 }
 
 returnValue ModeChanger::callCurrModeFunc (long param) {
-    if (_currMode > -1) { // Negative stands for some error
-        returnValue retVal = (*_funcArray[_currMode]) (param);
-        if (_endingFunction) { (*_endingFunction) (param); }
+    if (currMode > -1) { // Negative stands for some error
+        returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
+        if (endingFunction) { (*endingFunction) (param); }
         return retVal;
     }
     return returnValue::ERROR; // error
