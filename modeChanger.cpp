@@ -160,7 +160,14 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
 returnValue ModeChanger::callCurrModeFunc (long param) {
     if (_currMode > -1) { // Negative stands for some error
         returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
-        if (controlStructPtr->endingFunction) { (*(controlStructPtr->endingFunction)) (param); }
+        if (controlStructPtr->endingFunction != nullptr) { (*(controlStructPtr->endingFunction)) (param); }
+        
+        if (retVal == returnValue::SHORTPRESS) changeCtlArray (controlStructPtr->nextPress);
+        if (retVal == returnValue::LONGPRESS)  changeCtlArray (controlStructPtr->nextLongPress);
+        
+        if (rotaryTurnLeft  ()) prevMode ();
+        if (rotaryTurnRight ()) nextMode ();
+        
         return retVal;
     }
     return returnValue::ERROR; // error
