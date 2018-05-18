@@ -18,6 +18,7 @@ struct ControlStruct {
     LoopMode loopMode;
     ControlStruct *nextPress;
     ControlStruct *nextLongPress;
+    int startMode;
 };
 
 class ModeChanger {
@@ -30,7 +31,7 @@ class ModeChanger {
     ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
     void changeCtlArray (ControlStruct *_controlStructPtr) { 
                                                              controlStructPtr = _controlStructPtr; 
-                                                             _currMode = 0;
+                                                             _currMode = controlStructPtr->startMode;
                                                              _prevMode = -100;
                                                              currentCallNumber = 0;
                                                              timer.switchOff ();
