@@ -29,7 +29,7 @@ class ModeChanger {
   public:
     ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
     void changeCtlArray (ControlStruct *_controlStructPtr) { 
-															 controlStructPtr = _controlStructPtr; 
+                                                             controlStructPtr = _controlStructPtr; 
                                                              _currMode = 0;
                                                              _prevMode = -100;
                                                              currentCallNumber = 0;
