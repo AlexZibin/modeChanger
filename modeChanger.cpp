@@ -53,6 +53,16 @@
     return false;
 }*/
 
+returnValue ModeChanger::callCurrModeFunc (long param) {
+    if (_currMode > -1) { // Negative stands for some error
+        returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
+        if (controlStructPtr->endingFunction != nullptr) { (*(controlStructPtr->endingFunction)) (param); }
+        
+        return retVal;
+    }
+    return returnValue::ERROR; // error
+}
+
 //////////////////////////////////////////////////////////////////////////////
 // moves to next function only when current function returns returnValue::NEXT
 // returns true to signal to terminate the loop
@@ -61,27 +71,45 @@ bool ModeChanger::loopThruModeFunc (void) {
 
     switch (callCurrModeFunc (currentCallNumber++)) { 
         case returnValue::NEXT:            // routine asks to forward-change mode
-            nextMode ();
+			if (direction == LoopDir::FORWARD) {
+				nextMode ();
+				if (_currMode == 0) changeCtlArray (controlStructPtr->nextPress);
+			}
+			else {
+				if (_currMode == 0) changeCtlArray (controlStructPtr->nextPress);
+				else prevMode ();
+			}
             break;
         case returnValue::SHORTPRESS:
         case returnValue::TERMINATE:
+            Serial.println("\n loopThruModeFunc/SHORTPRESS or TERMINATE");
             changeCtlArray (controlStructPtr->nextPress);
             return true; 
             break;
         case returnValue::LONGPRESS:
+            Serial.println("\n loopThruModeFunc/LONGPRESS ");
             changeCtlArray (controlStructPtr->nextLongPress);
             return true;
             break;
     }
 
 
-    if (controlStructPtr->endingFunction != nullptr) (*(controlStructPtr->endingFunction)) (0);
+//    if (controlStructPtr->endingFunction != nullptr) (*(controlStructPtr->endingFunction)) (0);
     
+	/*static int counter;
+	if (counter++ > 200) {
+		counter = 0;
+		Serial.println ("loopThruModeFunc is working!");
+	}*/
+	
     if (rotaryTurnLeft ()) {
-        prevMode ();
+		//Serial.println ("loopThruModeFunc/rotaryTurnLeft is working!");
+        direction = LoopDir::BACK;
+		prevMode ();
     }    
     if (rotaryTurnRight ()) {
-        nextMode ();
+        direction = LoopDir::FORWARD;
+		nextMode ();
     }    
     if (button.shortPress()) {
         changeCtlArray (controlStructPtr->nextPress);
@@ -155,21 +183,5 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
         delay (1000);
     }
     return _currMode; 
-}
-
-returnValue ModeChanger::callCurrModeFunc (long param) {
-    if (_currMode > -1) { // Negative stands for some error
-        returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
-        if (controlStructPtr->endingFunction != nullptr) { (*(controlStructPtr->endingFunction)) (param); }
-        
-        if (retVal == returnValue::SHORTPRESS) changeCtlArray (controlStructPtr->nextPress);
-        if (retVal == returnValue::LONGPRESS)  changeCtlArray (controlStructPtr->nextLongPress);
-        
-        if (rotaryTurnLeft  ()) prevMode ();
-        if (rotaryTurnRight ()) nextMode ();
-        
-        return retVal;
-    }
-    return returnValue::ERROR; // error
 }
 
