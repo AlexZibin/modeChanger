@@ -1,58 +1,5 @@
 #include "modeChanger.h"
 
-bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) {
-    // Each function in _funcArray is called for nSec seconds or until it returns a flag
-    static int _numCycles;
-      
-    if (!timer.isOn ()) {
-        _numCycles = numCycles;
-        timer.setInterval ("ms", nSec*1000);
-        timer.switchOn ();
-        applyMode (0);      /* */
-        
-        switch (direction) {
-          case LoopDir::BACK:
-          case LoopDir::BACK_AND_FORWARD:
-              prevMode (); // Starting from last function and looping to the first one
-        };
-    } else if (timer.needToTrigger ()) {
-        _currentCallNumber = 0;
-        switch (direction) {
-          case LoopDir::FORWARD:
-          case LoopDir::FORWARD_AND_BACK: // FORWARD_AND_BACK now is a stub; will be developed later
-                Serial.println ("Switching forward");
-                nextMode ();
-                if (getCurrModeNumber () == 0) { // We've travelled the whole loop of functions!
-                    if (--_numCycles == 0) {
-                        timer.switchOff ();
-                        return true; 
-                    }
-                }
-                break;
-          case LoopDir::BACK:
-          case LoopDir::BACK_AND_FORWARD: // BACK_AND_FORWARD now is a stub; will be developed later
-              prevMode ();
-              if (getCurrModeNumber () == _numModes-1) { // We've travelled the whole loop of functions!
-                  if (--_numCycles == 0) {
-                      timer.switchOff ();
-                      return true; 
-                  }
-              }
-              break;
-        }
-    } 
-    switch (callCurrModeFunc (_currentCallNumber++)) { 
-        case returnValue::NEXT:            // routine asks to forward-change mode
-            timer.prepareToTrigger ();
-            break;
-        case returnValue::TERMINATE:       // routine asks to terminate the loop of functions
-            _currentCallNumber = 0;
-            timer.switchOff ();
-            return true; 
-    }
-    return false;
-}
-
 // moves to next function only when current function returns returnValue::NEXT
 // returns true to signal to terminate the loop
 bool ModeChanger::loopThruModeFunc (void) {
@@ -68,10 +15,6 @@ bool ModeChanger::loopThruModeFunc (void) {
     }
     return false;
 }
-
-// stub, not implemented yet:
-bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return false;}
-//bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
 
 bool ModeChanger::modeJustChanged (void) {
     if (_prevMode != _currMode) {
@@ -143,3 +86,60 @@ returnValue ModeChanger::callCurrModeFunc (long param) {
     return returnValue::ERROR; // error
 }
 
+/*
+bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction) {
+    // Each function in _funcArray is called for nSec seconds or until it returns a flag
+    static int _numCycles;
+      
+    if (!timer.isOn ()) {
+        _numCycles = numCycles;
+        timer.setInterval ("ms", nSec*1000);
+        timer.switchOn ();
+        applyMode (0);      
+        
+        switch (direction) {
+          case LoopDir::BACK:
+          case LoopDir::BACK_AND_FORWARD:
+              prevMode (); // Starting from last function and looping to the first one
+        };
+    } else if (timer.needToTrigger ()) {
+        _currentCallNumber = 0;
+        switch (direction) {
+          case LoopDir::FORWARD:
+          case LoopDir::FORWARD_AND_BACK: // FORWARD_AND_BACK now is a stub; will be developed later
+                Serial.println ("Switching forward");
+                nextMode ();
+                if (getCurrModeNumber () == 0) { // We've travelled the whole loop of functions!
+                    if (--_numCycles == 0) {
+                        timer.switchOff ();
+                        return true; 
+                    }
+                }
+                break;
+          case LoopDir::BACK:
+          case LoopDir::BACK_AND_FORWARD: // BACK_AND_FORWARD now is a stub; will be developed later
+              prevMode ();
+              if (getCurrModeNumber () == _numModes-1) { // We've travelled the whole loop of functions!
+                  if (--_numCycles == 0) {
+                      timer.switchOff ();
+                      return true; 
+                  }
+              }
+              break;
+        }
+    } 
+    switch (callCurrModeFunc (_currentCallNumber++)) { 
+        case returnValue::NEXT:            // routine asks to forward-change mode
+            timer.prepareToTrigger ();
+            break;
+        case returnValue::TERMINATE:       // routine asks to terminate the loop of functions
+            _currentCallNumber = 0;
+            timer.switchOff ();
+            return true; 
+    }
+    return false;
+}
+*/
+// stub, not implemented yet:
+//bool ModeChanger::loopThruModeFunc (LoopDir direction, long numCycles) {return false;}
+//bool ModeChanger::loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero) {
