@@ -27,7 +27,7 @@ class ModeChanger {
     int _prevMode = -100;
     long currentCallNumber = 0;
     Timer timer;
-	LoopDir direction;
+    LoopDir direction;
   public:
     ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
     void changeCtlArray (ControlStruct *_controlStructPtr) { 
