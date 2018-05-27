@@ -82,12 +82,12 @@ bool ModeChanger::loopThruModeFunc (void) {
             break;
         case returnValue::SHORTPRESS:
         case returnValue::TERMINATE:
-            Serial.println("\n loopThruModeFunc/SHORTPRESS or TERMINATE");
+            //Serial.println("\n loopThruModeFunc/SHORTPRESS or TERMINATE");
             changeCtlArray (controlStructPtr->nextPress);
             return true; 
             break;
         case returnValue::LONGPRESS:
-            Serial.println("\n loopThruModeFunc/LONGPRESS ");
+            //Serial.println("\n loopThruModeFunc/LONGPRESS ");
             changeCtlArray (controlStructPtr->nextLongPress);
             return true;
             break;
@@ -102,15 +102,17 @@ bool ModeChanger::loopThruModeFunc (void) {
 		Serial.println ("loopThruModeFunc is working!");
 	}*/
 	
-    if (rotaryTurnLeft ()) {
-		//Serial.println ("loopThruModeFunc/rotaryTurnLeft is working!");
-        direction = LoopDir::BACK;
-		prevMode ();
-    }    
-    if (rotaryTurnRight ()) {
-        direction = LoopDir::FORWARD;
-		nextMode ();
-    }    
+    if (controlStructPtr->funcArrayLen> 1) {
+		if (rotaryTurnLeft ()) {
+			//Serial.println ("loopThruModeFunc/rotaryTurnLeft is working!");
+			direction = LoopDir::BACK;
+			prevMode ();
+		}    
+		if (rotaryTurnRight ()) {
+			direction = LoopDir::FORWARD;
+			nextMode ();
+		}
+	}
     if (button.shortPress()) {
         changeCtlArray (controlStructPtr->nextPress);
     }
@@ -179,7 +181,7 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
     }
 	currentCallNumber = 0;
     if (_currMode < 0) { // newModeFunc not found in the list of our registered functions! This is not allowed!
-        Serial.println ("\n\nERROR! MODE NOT FOUND!\n\n");
+        Serial.println (F("\n\nERROR! MODE NOT FOUND!\n\n"));
         delay (1000);
     }
     return _currMode; 
