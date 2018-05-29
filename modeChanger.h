@@ -35,7 +35,7 @@ class ModeChanger {
                                                              _currMode = controlStructPtr->startMode;
                                                              _prevMode = -100;
                                                              currentCallNumber = 0;
-															 direction = LoopDir::FORWARD;
+                                                             direction = LoopDir::FORWARD;
                                                              timer.switchOff ();
                                                            }
     int getCurrModeNumber (void) { return _currMode; }
