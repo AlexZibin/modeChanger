@@ -54,7 +54,7 @@
 }*/
 
 returnValue ModeChanger::callCurrModeFunc (long param) {
-    if (_currMode > -1) { // Negative stands for some error
+    if (!err ()) { // Negative stands for some error
         returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
         if (controlStructPtr->endingFunction != nullptr) { (*(controlStructPtr->endingFunction)) (param); }
         
@@ -189,7 +189,7 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
 
 int ModeChanger::err (void) {
     if ((_currMode < 0) || (_currMode >= controlStructPtr->funcArrayLen)) {
-        Serial.print (F("\n\n ModeChanger::err ERROR! MODE NOT FOUND!\n\n")); Serial.println (_currMode);
+        Serial.print (F("\n\n ModeChanger::err ERROR! _currMode = ")); Serial.println (_currMode);
         return _currMode; 
     }
     return 0; 
