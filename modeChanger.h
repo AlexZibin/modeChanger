@@ -39,6 +39,7 @@ class ModeChanger {
                                                              timer.switchOff ();
                                                            }
     int getCurrModeNumber (void) { return _currMode; }
+    int err (void);
     int nextMode (void);
     int prevMode (void);
     int applyMode (int newMode);
