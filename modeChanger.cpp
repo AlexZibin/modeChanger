@@ -187,3 +187,10 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
     return _currMode; 
 }
 
+int ModeChanger::err (void) {
+    if ((_currMode < 0) || (_currMode >= controlStructPtr->funcArrayLen)) {
+        Serial.print (F("\n\n ModeChanger::err ERROR! MODE NOT FOUND!\n\n")); Serial.println (_currMode);
+        return _currMode; 
+    }
+    return 0; 
+}
