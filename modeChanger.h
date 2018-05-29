@@ -38,7 +38,7 @@ class ModeChanger {
                                                              direction = LoopDir::FORWARD;
                                                              timer.switchOff ();
                                                            }
-    int getCurrModeNumber (void) { return _currMode; }
+    int getCurrModeNumber (void) { return err () ? 0 : _currMode; }
     int err (void);
     int nextMode (void);
     int prevMode (void);
