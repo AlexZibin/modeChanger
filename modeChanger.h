@@ -32,9 +32,9 @@ class ModeChanger {
     ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
     void changeCtlArray (ControlStruct *_controlStructPtr) { 
                                                              controlStructPtr = _controlStructPtr; 
-                                                             _currMode = controlStructPtr->startMode;
+                                                             applyMode (controlStructPtr->startMode);
                                                              _prevMode = -100;
-                                                             currentCallNumber = 0;
+                                                             //currentCallNumber = 0;
                                                              direction = LoopDir::FORWARD;
                                                              timer.switchOff ();
                                                            }
