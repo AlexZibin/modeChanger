@@ -136,11 +136,11 @@ bool ModeChanger::modeJustChanged (void) {
 }
 
 int ModeChanger::nextMode (void) {
-    if (_currMode > -1) { // Negative stands for some error
-        if (++_currMode == controlStructPtr->funcArrayLen) { // Close the circle
+    if (!err ()) { // Negative stands for some error
+        if (++_currMode >= controlStructPtr->funcArrayLen) { // Close the circle
             _currMode = 0;
         }
-    }    
+    } else _currMode = 0;
     currentCallNumber = 0;
     /*Serial.print ("\nSwitched to mode ");
     Serial.println (_currMode);
@@ -149,11 +149,11 @@ int ModeChanger::nextMode (void) {
 }
 
 int ModeChanger::prevMode (void) {
-    if (_currMode > -1) { // Negative stands for some error
+    if (!err ()) { // Negative stands for some error
         if (--_currMode == -1) { // Close the circle backwards
             _currMode = controlStructPtr->funcArrayLen - 1;
         }
-    }    
+    } else _currMode = 0;
     currentCallNumber = 0;
     return _currMode; 
 }
