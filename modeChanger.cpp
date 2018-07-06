@@ -55,8 +55,24 @@
 
 returnValue ModeChanger::callCurrModeFunc (long param) {
     if (!err ()) { // Negative stands for some error
+        
+        if (controlStructPtr->secondsForEachMode > 0) {
+            if (!timer.isOn ()) {
+                timer.setInterval ("ms", controlStructPtr->secondsForEachMode*1000UL);
+                timer.switchOn ();
+            } else {
+                if (timer.needToTrigger()) {
+                    timer.switchOff ();
+                    return returnValue::NEXT;
+                }
+            }
+        }
+        
         returnValue retVal = (*(controlStructPtr->funcArray)[_currMode]) (param);
         if (controlStructPtr->endingFunction != nullptr) { (*(controlStructPtr->endingFunction)) (param); }
+        
+        if (retVal != returnValue::CONTINUE)
+            timer.switchOff ();
         
         return retVal;
     }
@@ -70,14 +86,26 @@ bool ModeChanger::loopThruModeFunc (void) {
     // Current function in controlStructPtr->funcArray is called until it returns a flag
 
     switch (callCurrModeFunc (currentCallNumber++)) { 
-        case returnValue::NEXT:            // routine asks to forward-change mode
+        case returnValue::NEXT:            // routine asks to change to next mode
 			if (direction == LoopDir::FORWARD) {
 				nextMode ();
-				if (_currMode == 0) changeCtlArray (controlStructPtr->nextPress);
+                if (controlStructPtr->loopMode == LoopMode::ONCE) {
+                    if (_currMode == 0) {
+                        changeCtlArray (controlStructPtr->nextPress);
+                    }
+                }
 			}
 			else {
-				if (_currMode == 0) changeCtlArray (controlStructPtr->nextPress);
-				else prevMode ();
+                if (controlStructPtr->loopMode == LoopMode::ONCE) {
+                    if (_currMode == 0) {
+                        changeCtlArray (controlStructPtr->nextPress);
+                    }
+                    else {
+                        prevMode ();
+                    }
+                } else {
+                    prevMode ();
+                }
 			}
             break;
         case returnValue::SHORTPRESS:

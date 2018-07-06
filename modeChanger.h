@@ -19,6 +19,7 @@ struct ControlStruct {
     ControlStruct *nextPress;
     ControlStruct *nextLongPress;
     int startMode;
+    int secondsForEachMode;
 };
 
 class ModeChanger {
@@ -34,7 +35,7 @@ class ModeChanger {
                                                              controlStructPtr = _controlStructPtr; 
                                                              applyMode (controlStructPtr->startMode);
                                                              _prevMode = -100;
-                                                             //currentCallNumber = 0;
+                                                             currentCallNumber = 0;
                                                              direction = LoopDir::FORWARD;
                                                              timer.switchOff ();
                                                            }
