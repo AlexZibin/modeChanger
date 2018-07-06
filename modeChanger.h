@@ -1,24 +1,46 @@
 #include "Timer.h" // https://github.com/AlexZibin/timer
+#include "DualFunctionButton.h"
+
+extern bool rotaryTurnLeft (); 
+extern bool rotaryTurnRight (); 
+extern DualFunctionButton button;
 
 enum class LoopDir {FORWARD, BACK, FORWARD_AND_BACK, BACK_AND_FORWARD};
-enum class returnValue {CONTINUE, NEXT, TERMINATE, ERROR};
+enum class returnValue {CONTINUE, NEXT, TERMINATE, ERROR, SHORTPRESS, LONGPRESS};
+enum class LoopMode {ONCE, INFINITE};
+
 typedef returnValue (*fPtr)(long); 
 
+struct ControlStruct {
+    fPtr *funcArray;
+    int funcArrayLen;
+    void (*endingFunction) (long);
+    LoopMode loopMode;
+    ControlStruct *nextPress;
+    ControlStruct *nextLongPress;
+    int startMode;
+    int secondsForEachMode;
+};
+
 class ModeChanger {
-    fPtr *_funcArray;
-    fPtr _endingFunction;
-    int _numModes;
+    ControlStruct *controlStructPtr;
     int _currMode = 0; // -1 is an indication of an error (index out of range; -1 = array not initialized; -2 = function not found; etc);
     int _prevMode = -100;
-    long _currentCallNumber = 0;
+    long currentCallNumber = 0;
     Timer timer;
+    LoopDir direction;
   public:
-    //ModeChanger (fPtr *funcArray, int numModes) : _funcArray(funcArray), _numModes(numModes), _endingFunction (nullptr) {}
-    //ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
-    ModeChanger (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) {changeCtlArray (funcArray, numModes, endingFunction); }
-    void changeCtlArray (fPtr *funcArray, int numModes, fPtr endingFunction = nullptr) : _funcArray(funcArray), _numModes(numModes) {setEndingFunction (endingFunction); }
-    void setEndingFunction (fPtr ptr) : _endingFunction (ptr) {}
-    int getCurrModeNumber (void) { return _currMode; }
+    ModeChanger (ControlStruct *_controlStructPtr) {changeCtlArray (_controlStructPtr); }
+    void changeCtlArray (ControlStruct *_controlStructPtr) { 
+                                                             controlStructPtr = _controlStructPtr; 
+                                                             applyMode (controlStructPtr->startMode);
+                                                             _prevMode = -100;
+                                                             currentCallNumber = 0;
+                                                             direction = LoopDir::FORWARD;
+                                                             timer.switchOff ();
+                                                           }
+    int getCurrModeNumber (void) { return err () ? 0 : _currMode; }
+    int err (void);
     int nextMode (void);
     int prevMode (void);
     int applyMode (int newMode);
@@ -35,6 +57,5 @@ class ModeChanger {
     //bool loopThruModeFunc (int nSec=10, int numCycles=1, LoopDir direction = LoopDir::FORWARD, int startMode = 0);
     //bool loopThruModeFunc (int nSec, int numCycles, LoopDir direction, bool switchAtZero=false) {
     
-    bool loopThruModeFunc (LoopDir direction = LoopDir::FORWARD, long numCycles=1); 
+    //bool loopThruModeFunc (LoopDir direction, long numCycles=1); 
 };
-
