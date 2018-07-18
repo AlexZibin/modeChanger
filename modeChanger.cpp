@@ -20,7 +20,7 @@
         switch (direction) {
           case LoopDir::FORWARD:
           case LoopDir::FORWARD_AND_BACK: // FORWARD_AND_BACK now is a stub; will be developed later
-                Serial.println ("Switching forward");
+                //Serial.println ("Switching forward");
                 nextMode ();
                 if (getCurrModeNumber () == 0) { // We've travelled the whole loop of functions!
                     if (--_numCycles == 0) {
@@ -170,9 +170,9 @@ int ModeChanger::nextMode (void) {
         }
     } else _currMode = 0;
     currentCallNumber = 0;
-    /*Serial.print ("\nSwitched to mode ");
-    Serial.println (_currMode);
-*/
+    
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
@@ -183,6 +183,9 @@ int ModeChanger::prevMode (void) {
         }
     } else _currMode = 0;
     currentCallNumber = 0;
+    
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
@@ -194,6 +197,9 @@ int ModeChanger::applyMode (int newMode) {
         _currMode = -10; // out of range error;
     }
     currentCallNumber = 0;
+    
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
@@ -209,15 +215,18 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
     }
 	currentCallNumber = 0;
     if (_currMode < 0) { // newModeFunc not found in the list of our registered functions! This is not allowed!
-        Serial.println (F("\n\nERROR! MODE NOT FOUND!\n\n"));
+        //Serial.println (F("\n\nERROR! MODE NOT FOUND!\n\n"));
         delay (1000);
     }
+    
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
 int ModeChanger::err (void) {
     if ((_currMode < 0) || (_currMode >= controlStructPtr->funcArrayLen)) {
-        Serial.print (F("\n\n ModeChanger::err ERROR! _currMode = ")); Serial.println (_currMode);
+        //Serial.print (F("\n\n ModeChanger::err ERROR! _currMode = ")); Serial.println (_currMode);
         return _currMode; 
     }
     return 0; 
