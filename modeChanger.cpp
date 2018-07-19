@@ -173,6 +173,8 @@ int ModeChanger::nextMode (void) {
     /*Serial.print ("\nSwitched to mode ");
     Serial.println (_currMode);
 */
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
@@ -183,6 +185,9 @@ int ModeChanger::prevMode (void) {
         }
     } else _currMode = 0;
     currentCallNumber = 0;
+
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
@@ -194,6 +199,9 @@ int ModeChanger::applyMode (int newMode) {
         _currMode = -10; // out of range error;
     }
     currentCallNumber = 0;
+
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
@@ -212,12 +220,15 @@ int ModeChanger::applyMode (fPtr newModeFunc) {
         Serial.println (F("\n\nERROR! MODE NOT FOUND!\n\n"));
         delay (1000);
     }
+
+    timer.switchOff (); // This forces the timer to restart at each manual mode change when using (controlStructPtr->secondsForEachMode > 0)
+    
     return _currMode; 
 }
 
 int ModeChanger::err (void) {
     if ((_currMode < 0) || (_currMode >= controlStructPtr->funcArrayLen)) {
-        Serial.print (F("\n\n ModeChanger::err ERROR! _currMode = ")); Serial.println (_currMode);
+        //Serial.print (F("\n\n ModeChanger::err ERROR! _currMode = ")); Serial.println (_currMode);
         return _currMode; 
     }
     return 0; 
